@@ -16,7 +16,7 @@ class CustomerReservation {
             // past date and time check
                 if( req.body.slot < moment().format() )
                 {
-                    return res.status(400).send({
+                    return res.status(401).send({
                         success:false,
                         message:"please enter your carefull"
                     })
@@ -46,7 +46,7 @@ class CustomerReservation {
                       console.log(err)
                       return res.status(400).send({
                           success:false,
-                          message: "hjsgdysjhsadf" });
+                          message: "saved faild" });
                   })
            }
         
