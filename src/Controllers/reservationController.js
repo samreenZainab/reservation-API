@@ -5,7 +5,23 @@ const reservationModel = require("../Models/reservationModel");
 
 
 class CustomerReservation {
-    async reservation(req,res){
+
+    async fetchALL(req,res){
+        await reservationModel.find({})
+        .then((userdata)=>{
+          return res.status(200).send({
+            success: true, 
+            message: userdata});
+        })
+        .catch((err)=>{
+            console.log(err)
+            return res.status(400).send({
+                success:false,
+                message: "try again" });
+        })
+    }
+
+    async Addreservation(req,res){
             // empty string check
                  if(    req.body.name === ""
                      || req.body.vehicalName ===""
@@ -50,6 +66,39 @@ class CustomerReservation {
                   })
            }
         
+    }
+
+    async updateReservation(req,res){
+        await reservationModel.findOneAndUpdate({id:req.body.id,
+            fullName:req.body.fullName,
+            email:req.body.email,
+            phoneNumber:req.body.phoneNumber
+        })
+        .then((userdata)=>{
+            return res.status(200).send({
+              success: true, 
+              message: "record saved successfully"});
+          console.log("userdata")
+          })
+          .catch((err)=>{
+              return res.status(400).send({
+                  success:false,
+                  err: {message: "save Failed"} });
+          })
+        
+    }
+    async deleteReservation(req,res){
+        await reservationModel.findOneAndDelete({id:req.body.id})
+        .then((userdata)=>{
+            return res.status(200).send({
+              success: true, 
+              message: "your record deleted successfully"});
+          })
+          .catch((err)=>{
+              return res.status(400).send({
+                  success:false,
+                  err: {message: "request failed try again"} });
+          })
     }
 
 } 
