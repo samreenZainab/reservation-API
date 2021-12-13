@@ -3,7 +3,7 @@ const router = express.Router()
 const controller = require("../Controllers/reservationController")
 
 
-router.get("/",controller.fetchALL)
+router.get("/getReservations",controller.fetchALL)
 
 router.post("/Addreservation",controller.Addreservation)
 
