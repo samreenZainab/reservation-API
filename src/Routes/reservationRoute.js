@@ -1,15 +1,20 @@
 const express = require("express")
-const router = express.Router()
-const controller = require("../Controllers/reservationController")
+const ROUTER = express.Router()
+const CONTROLLER = require("../Controllers/reservationController")
 
 
-router.get("/getReservations",controller.fetchALL)
+// ROUTER.get("/get_reservations",
+// function (req, res) {
+//     res.json(adminController.login(req.body))}
+//     )
 
-router.post("/Addreservation",controller.Addreservation)
+ROUTER.get("/get-reservation",CONTROLLER.fetchALL)
 
-router.put("/updateReservation:id",controller.updateReservation)
+ROUTER.post("/Add_reservation",CONTROLLER.AddReservation)
 
-router.delete("/deleteReservation:id",controller.deleteReservation)
+ROUTER.put("/update_Reservation:id",CONTROLLER.updateReservation)
 
-module.exports=router
+ROUTER.delete("/delete_Reservation:id",CONTROLLER.deleteReservation)
+
+module.exports=ROUTER
 

@@ -1,53 +1,56 @@
-const express = require("express");
-const app = express()
-const moment = require("moment")
-const reservationModel = require("../Models/reservationModel");
+const MOMENT = require("moment")
+const RESERVATION_MODEL = require("../Models/reservationModel");
+const RESPONSE_SERVICE = require("../services/responeService")
 
 
 class CustomerReservation {
 
     async fetchALL(req,res){
-        await reservationModel.find({})
+        RESERVATION_MODEL.find({})
         .then((userdata)=>{
-          return res.status(200).send({
-            success: true, 
-            message: userdata});
+        return res.status(200).send({
+            res:RESPONSE_SERVICE.createResponse("SUCCESS",userdata)
+        }) 
         })
         .catch((err)=>{
             console.log(err)
+
             return res.status(500).send({
-                success:false,
-                message: "try again" });
+                res:RESPONSE_SERVICE.createResponse("SERVER_ERROR","something went wrong")
+            });
         })
     }
+    
 
-    async Addreservation(req,res){
+    async AddReservation(req,res){
             // empty string check
                  if(    req.body.name === ""
                      || req.body.vehicalName ===""
-                     || req.body.slot ==="")
-            {return res.status(403).send({
-            success:false,err: {message: "incomplete data"} });}
+                     || req.body.slot ===""){
+                        return res.status(206).send({
+                         res:RESPONSE_SERVICE.createResponse("PARTIAL_CONTENT","incomplete data")
+                        }) 
+                     }
+                     
 
             // past date and time check
-                if( req.body.slot < moment().format() )
+                if( req.body.slot < MOMENT().format() )
                 {
                     return res.status(401).send({
-                        success:false,
-                        message:"please enter your carefull"
+                        res:RESPONSE_SERVICE.createResponse("FAILURE","your chosing slot is in past please enter carfully")
+                        
                     })
                 }
             // reservation check
-            if(await reservationModel.findOne({slot:req.body.slot}).select('slot'))
+            if(await RESERVATION_MODEL.findOne({slot:req.body.slot}).select('slot'))
             {
                 return res.status(200).send({
-                    success:false,
-                    message:"this slot is already reserved please chose another slot"
+                    res:RESPONSE_SERVICE.createResponse("SUCCESS","this slot is already reserved please chose another slot")
                 })
             }
             else
             {
-                const userReservation=new reservationModel({
+                const userReservation=new RESERVATION_MODEL({
                     name:req.body.name,
                     vehicalName:req.body.vehicalName,
                     slot:req.body.slot
@@ -55,40 +58,35 @@ class CustomerReservation {
                 await userReservation.save()
                 .then((userdata)=>{
                     return res.status(200).send({
-                      success: true, 
-                      message: "record saved successfully"});
+                    res:RESPONSE_SERVICE.createResponse("SUCCESS","record saved successfully")})
                   })
                   .catch((err)=>{
                       console.log(err)
                       return res.status(400).send({
-                          success:false,
-                          message: "saved faild" });
+                        res:RESPONSE_SERVICE.createResponse("FAILURE","saved faild") })
                   })
            }
         
     }
 
     async updateReservation(req,res){
-        await reservationModel.findOneAndUpdate({id:req.body.id,
+        await RESERVATION_MODEL.findOneAndUpdate({id:req.body.id,
             fullName:req.body.fullName,
             email:req.body.email,
             phoneNumber:req.body.phoneNumber
         })
         .then((userdata)=>{
             return res.status(200).send({
-              success: true, 
-              message: "record saved successfully"});
-          console.log("userdata")
+                res:RESPONSE_SERVICE.createResponse("SUCCESS","record UpDated successfully")})
           })
           .catch((err)=>{
               return res.status(400).send({
-                  success:false,
-                  err: {message: "save Failed"} });
+                res:RESPONSE_SERVICE.createResponse("FAILURE","saved failed")  });
           })
         
     }
     async deleteReservation(req,res){
-        await reservationModel.findOneAndDelete({id:req.body.id})
+        await RESERVATION_MODEL.findOneAndDelete({id:req.body.id})
         .then((userdata)=>{
             return res.status(200).send({
               success: true, 

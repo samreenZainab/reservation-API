@@ -1,31 +1,29 @@
-const express = require("express");
+const EXPRESS = require("express");
 
-const app = express();
+const app = EXPRESS();
 
-const body_parser = require("body-parser")
+const BODY_PARSER = require("body-parser")
 
-const env = require('dotenv').config()
+const ENV = require('dotenv').config()
 
-const connection = require("./database/connection");// connection database
+const {dbConnection}= require("./database/connection")
 
-var reservationRoute = require("./Routes/reservationRoute")
+const rervationRoute = require("./Routes/reservationRoute")
 
-var port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
-app.use(body_parser.urlencoded({extended: true })); //if false then parse only strings
-app.use(body_parser.json());
+dbConnection()
+
+app.use(BODY_PARSER.urlencoded({extended: true })); 
+app.use(BODY_PARSER.json());
 
 //middlewares
-app.use(reservationRoute)
+app.use(rervationRoute)
 
-// app.listen(PORT,(err)=>{
-//     if(err)
-//     console.log(err)
-// })
 app.get("/",(req,res)=>{
     res.send("ok")
 })
 
-app.listen(port, function() {
-    console.log("App is running on port " + port);
+app.listen(PORT, function() {
+    console.log("app is running on port " + PORT);
 });
